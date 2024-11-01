@@ -32,3 +32,6 @@
                var(--color) 0);
      background-size: var(--size) var(--size);
 }
+.bg-homepage{
+     background: #F4F6FF;
+}

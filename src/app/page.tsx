@@ -11,9 +11,11 @@ export default function Home() {
   useEffect(() => {
     dispatch(postActions.getPost())
   }, [])
-  console.log(post);
+
   return (
 
-    <h1></h1>
+    <div className="bg-homepage">
+      <h1></h1>
+    </div>
   );
 }

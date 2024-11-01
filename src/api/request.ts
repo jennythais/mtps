@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig } from 'axios';
 
-import { getToken } from '@/utils/token';
+import { getToken, getTokenCookie } from '@/utils/token';
 import qs from 'qs';
 
 const request = (url: string, options: AxiosRequestConfig & {isAuthorized?:boolean}) => {
@@ -8,16 +8,15 @@ const request = (url: string, options: AxiosRequestConfig & {isAuthorized?:boole
 
   options.headers = {
     ...headers,
-    ...(options.isAuthorized ? { Authorization: `Bearer ${getToken()}` } : {}),
+    ...(options.isAuthorized ? { Authorization: `Bearer ${getTokenCookie()}` } : {}),
   };
-
   if (options.method === 'GET') {
     options.params = data; 
   } else {
     options.data = data; 
   }
-
   options.paramsSerializer = params => qs.stringify(params, { arrayFormat: 'repeat' });
+  options.withCredentials = true;
 
   return axios({ url, ...options })
     .then(response => {

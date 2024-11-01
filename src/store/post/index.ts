@@ -24,7 +24,7 @@ export const postSlice = createSlice({
      name: SLICE_NAME.POST,
      initialState: initialState,
      reducers: {
-    setProduct: (state, { payload }: PayloadAction<AppTypes.Post | undefined>) => {
+    setPost: (state, { payload }: PayloadAction<AppTypes.Post | undefined>) => {
       state.post = payload
     }
   },

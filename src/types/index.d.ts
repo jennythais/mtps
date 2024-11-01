@@ -1,7 +1,7 @@
 export namespace AppTypes {
      export type Status = 'Public' | 'Private';
      export type Point = 3 | 5 | 7 | 10;
-     export type PointCategory = "Academic" | "Volunteer" | "Mental Physical";
+     export type Category = "Academic" | "Volunteer" | "Mental Physical";
 
      export interface LoginRequest {
           email: string;
@@ -34,12 +34,35 @@ export namespace AppTypes {
           location: string;
           numberParticipants: number;
           facultyName: string;
-          category: PointCategory;
+          category: Category;
           point: Point;
           stdJoin?: StdJoin[];
           testId?: string;
           semester: string;
           yearStart: number;
           yearEnd: number;
+     }
+     export type PointDetail = {
+          name: string;
+          point: number;
+     }
+     export interface PointCategory{
+          studentId: string;
+          academic: PointDetail[];
+          volunteer: PointDetail[];
+          mentalPhysical: PointDetail[];
+          discipline: PointDetail[];
+          reward: PointDetail[];
+          pioneering: PointDetail[];
+          totalPoints: number;
+     }
+     export interface User {
+          id: string;
+          email: string;
+          name: string;
+          role: string;
+          facultyName: string;
+          trainingPoint: PointCategory
+          activities: string[];
      }
 }
