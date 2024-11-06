@@ -7,6 +7,12 @@ export namespace AppTypes {
           email: string;
           password: string;
      }
+     export interface LoginResponse {
+          role?: AppTypes.User.role;
+          token: {
+               accessToken: string;  
+          };
+     }
      export interface EmailRequest {
           email: string;
      }

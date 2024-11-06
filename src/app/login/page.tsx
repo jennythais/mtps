@@ -44,10 +44,9 @@ const Login = () => {
                     password
                })
           )
-
           if (result.meta.requestStatus === 'fulfilled') {
                toast.success('Login successful')
-               router.push('/homepage')
+               router.push('/')
           }
      }
      return (

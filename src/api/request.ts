@@ -1,21 +1,23 @@
 import axios, { AxiosRequestConfig } from 'axios';
 
-import { getToken, getTokenCookie } from '@/utils/token';
+import { getTokenCookie } from '@/utils/token';
 import qs from 'qs';
 
 const request = (url: string, options: AxiosRequestConfig & {isAuthorized?:boolean}) => {
   const { data, headers = { 'Content-Type': 'application/json' } } = options;
-
   options.headers = {
     ...headers,
     ...(options.isAuthorized ? { Authorization: `Bearer ${getTokenCookie()}` } : {}),
   };
   if (options.method === 'GET') {
-    options.params = data; 
+    // Đảm bảo rằng params được truyền đúng cấu trúc
+    options.params = data;  // Truyền trực tiếp `data` vào `params`
+    console.log('Params:', options.params); // Kiểm tra params
   } else {
-    options.data = data; 
+    options.data = data;
   }
   options.paramsSerializer = params => qs.stringify(params, { arrayFormat: 'repeat' });
+
   options.withCredentials = true;
 
   return axios({ url, ...options })

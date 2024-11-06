@@ -2,11 +2,13 @@ import { Method } from "axios";
 import request from "./request";
 import endpoints from "./endpoint";
 import env from "../config/env";
-export interface IApiResponses<T = {} >{
-     data: T;
-     message: string;
-     status: number;
-     success: boolean;
+export interface IApiResponses<T = {}> {
+     data: {
+          data: T;
+     }
+          status: number;
+          message: string;
+          success: boolean;
 }
 interface IOption{
      headers?: {[key: string]: any};
@@ -20,8 +22,10 @@ const gen = (params: string, baseURL?: string) => {
      if (paramsArray.length === 2) {
           method = paramsArray[0] as Method
           url = paramsArray[1]
+          console.log(url);
      }
      return function (data?: any, options?: IOption) {
+          console.log("option", options);
           return request(url, {
                data: data,
                method: method,

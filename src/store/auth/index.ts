@@ -1,6 +1,7 @@
 import api from "@/api";
 import { SLICE_NAME } from "@/constants/slice";
 import { AppTypes } from "@/types";
+import { setTokenCookie } from "@/utils/token";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 export interface AuthState {
@@ -10,7 +11,11 @@ export const initialState: AuthState = {
      loading: {}
 }
 const login = createAsyncThunk(`${SLICE_NAME.AUTH}/login`, async(form: AppTypes.LoginRequest ) => {
-     const res = await api.login<AppTypes.LoginRequest>(form);
+     const res = await api.login<AppTypes.LoginResponse>(form);
+     return res
+})
+const logout = createAsyncThunk(`${SLICE_NAME.AUTH}/logout`, async() => {
+     const res = await api.logout();
      return res
 })
 const forgotPassword = createAsyncThunk(`${SLICE_NAME.AUTH}/forgotPassword`, async(form: AppTypes.EmailRequest ) => {
@@ -35,9 +40,20 @@ const authSlice = createSlice({
           })
           builder.addCase(login.fulfilled, (state, {payload}) => {
                state.loading[login.typePrefix] = false
+               setTokenCookie(payload.data.data.token.accessToken)
           })
           builder.addCase(login.rejected, (state, {payload}) => {
                state.loading[login.typePrefix] = false
+          })
+          builder.addCase(logout.pending, (state, {payload}) => {
+               state.loading[logout.typePrefix] = true
+          })
+          builder.addCase(logout.fulfilled, (state, {payload}) => {
+               state.loading[logout.typePrefix] = false
+               setTokenCookie('')
+          })
+          builder.addCase(logout.rejected, (state, {payload}) => {
+               state.loading[logout.typePrefix] = false
           })
           builder.addCase(forgotPassword.pending, (state, {payload}) => {
                state.loading[forgotPassword.typePrefix] = true
@@ -72,6 +88,7 @@ export default authSlice.reducer
 export const authActions = {
     ...authSlice.actions,
      login,
+     logout,
      forgotPassword,
      changePassword,
      resetPassword

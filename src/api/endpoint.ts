@@ -22,7 +22,7 @@ const endpoints = {
      getPosts: 'GET /api/posts',
      getPostById: 'GET /api/post_by_id/{postID}',
      getExpiredPosts: 'GET /api/expired_posts',
-     getPostByCategory: 'GET /api/post_by_cate',
+     getPostByCategory: 'GET /api/post_by_category',
      getListAttendees: 'GET /api/list_attendees/{id}',
      createPost: 'POST /api/create_post',
      updatePost: 'PUT /api/update_post',

@@ -1,5 +1,6 @@
 export enum SLICE_NAME {
      POST = 'POST',
-     AUTH = 'AUTH'
-     ME = 'ME'
+     AUTH = 'AUTH',
+     ME = 'ME',
+     LOAD = 'LOAD',
 }

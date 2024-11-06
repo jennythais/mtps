@@ -15,6 +15,7 @@ export const initialState: MeState = {
 const getUser = createAsyncThunk(`${SLICE_NAME.ME}/getUser`, async (_,{rejectWithValue}) => {
      const data = await api.getProfile<AppTypes.User>();
      return data;
+
 })
 export const userSlice = createSlice({
      name: SLICE_NAME.ME,
@@ -30,7 +31,7 @@ export const userSlice = createSlice({
           })
           builder.addCase(getUser.fulfilled, (state, action) => {
                state.loading[getUser.typePrefix] = false;
-               state.user = action.payload.data;
+               state.user = action.payload.data.data;
           })
           builder.addCase(getUser.rejected, (state, action) => {
                state.loading[getUser.typePrefix] = false;

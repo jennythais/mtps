@@ -8,6 +8,7 @@ export const getToken = () => {
 export const getTokenCookie = () => {
   return Cookies.get(TOKEN_KEY);
 }
+
 export const setToken = (token: string) => {
   return localStorage.setItem(TOKEN_KEY, token)
 }
@@ -40,9 +41,6 @@ export const removeTempToken = () => {
 export const isTokenValid = (token?: string) => {
   return typeof token === 'string' && token !== ''
 }
-export const isTokenCookieValid = () => {
-  return Cookies.get(TOKEN_KEY) !== undefined
-}
 
 
 export const isRefreshTokenValid = (token?: string) => {
@@ -57,8 +55,9 @@ export const clearStorage = () => {
   localStorage.clear()
 }
 export const clearCookie = () => {
-  Cookies.remove(TOKEN_KEY)
-  Cookies.remove(TEMP_TOKEN_KEY)
-  Cookies.remove('token')
-  Cookies.remove('tempToken')
+  Cookies.remove(TOKEN_KEY);
+  Cookies.remove(TEMP_TOKEN_KEY);
+  Cookies.remove('accessToken');
+  Cookies.remove('refreshToken');
+  sessionStorage.clear();
 }
