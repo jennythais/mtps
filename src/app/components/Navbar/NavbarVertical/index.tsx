@@ -12,6 +12,8 @@ import CreateIcon from '@mui/icons-material/Create';
 import PersonIcon from '@mui/icons-material/Person';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { authActions } from '@/store/auth'
+import AvatarColor from '../../@shared/avatar/AvatarColor'
+import LoadingInfor from '../../Loading/LoadingInfor'
 
 
 type Navigation = {
@@ -22,7 +24,7 @@ type Navigation = {
 const NavbarVertical = () => {
 
      const dispatch = useDispatch();
-     const { user } = useSelector((state) => state.me);
+     const { user, loading } = useSelector((state) => state.me);
      const router = useRouter();
      useEffect(() => {
           dispatch(userActions.getUser());
@@ -78,15 +80,16 @@ const NavbarVertical = () => {
                          alignItems: 'center',
                          p: 2
                     }}>
-                         <Avatar sx={{
-                              width: '70px',
-                              height: '70px',
-                         }} />
-                         <Stack direction="column" spacing={0.5}>
-                              <Typography variant="h6">{user?.name}</Typography>
-                              <Typography variant="body2">{user?.email}</Typography>
-                              <Typography variant="body2">{user?.facultyName}</Typography>
-                         </Stack>
+                         {loading[userActions.getUser.typePrefix] ? (<LoadingInfor />) : (
+                              <>
+                                   <AvatarColor name={user?.name || ""} width={70} height={70} />
+                                   <Stack direction="column" spacing={0.5}>
+                                        <Typography variant="h6">{user?.name}</Typography>
+                                        <Typography variant="body2">{user?.email}</Typography>
+                                        <Typography variant="body2">{user?.facultyName}</Typography>
+                                   </Stack>
+                              </>
+                         )}
                     </Box>
                     <Divider />
                     <MenuList sx={{
@@ -114,7 +117,7 @@ const NavbarVertical = () => {
                          ))}
                     </MenuList>
                </Box>
-          </Box>
+          </Box >
      );
 }
 

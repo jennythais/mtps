@@ -22,10 +22,8 @@ const gen = (params: string, baseURL?: string) => {
      if (paramsArray.length === 2) {
           method = paramsArray[0] as Method
           url = paramsArray[1]
-          console.log(url);
      }
      return function (data?: any, options?: IOption) {
-          console.log("option", options);
           return request(url, {
                data: data,
                method: method,

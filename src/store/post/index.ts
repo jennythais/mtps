@@ -44,7 +44,7 @@ export const postSlice = createSlice({
                state.postById = payload
           },
           setPostFilter: (state, { payload }: PayloadAction<AppTypes.Post[]>) => {
-                    state.postFilter = payload; 
+                                   state.postFilter = payload; 
           }
      },
   extraReducers: builder => {

@@ -14,7 +14,7 @@ const endpoints = {
      // Profile
      getProfile: 'GET /api/profile',
      updateProfile: 'PUT /api/update-profile',
-     changePassword: 'POST /api/change-password',
+     changePassword: 'PUT /api/change-password',
      pointCategory: 'POST /api/get-points-category',
      updateTrainingPoint: 'PUT /api/update-training-point',
 

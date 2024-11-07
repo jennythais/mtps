@@ -22,14 +22,7 @@ const forgotPassword = createAsyncThunk(`${SLICE_NAME.AUTH}/forgotPassword`, asy
      const res = await api.forgotPassword<AppTypes.EmailRequest>(form);
      return res
 })
-const resetPassword = createAsyncThunk(`${SLICE_NAME.AUTH}/resetPassword`, async(form: AppTypes.ResetPasswordRequest ) => {
-     const res = await api.resetPassword<AppTypes.ResetPasswordRequest>(form);
-     return res
-})
-const changePassword = createAsyncThunk(`${SLICE_NAME.AUTH}/changePassword`, async(form: AppTypes.ChangePasswordRequest ) => {
-     const res = await api.changePassword<AppTypes.ChangePasswordRequest>(form);
-     return res
-})
+
 const authSlice = createSlice({
      name: SLICE_NAME.AUTH,
      initialState: initialState,
@@ -64,24 +57,7 @@ const authSlice = createSlice({
           builder.addCase(forgotPassword.rejected, (state, {payload}) => {
                state.loading[forgotPassword.typePrefix] = false
           })
-          builder.addCase(changePassword.pending, (state, {payload}) => {
-               state.loading[changePassword.typePrefix] = true
-          })
-          builder.addCase(changePassword.fulfilled, (state, {payload}) => {
-               state.loading[changePassword.typePrefix] = false
-          })
-          builder.addCase(changePassword.rejected, (state, {payload}) => {
-               state.loading[changePassword.typePrefix] = false
-          })
-            builder.addCase(resetPassword.pending, (state, {payload}) => {
-               state.loading[changePassword.typePrefix] = true
-          })
-          builder.addCase(resetPassword.fulfilled, (state, {payload}) => {
-               state.loading[changePassword.typePrefix] = false
-          })
-          builder.addCase(resetPassword.rejected, (state, {payload}) => {
-               state.loading[changePassword.typePrefix] = false
-          })
+
      }
 })
 export default authSlice.reducer
@@ -90,6 +66,5 @@ export const authActions = {
      login,
      logout,
      forgotPassword,
-     changePassword,
-     resetPassword
+
 }

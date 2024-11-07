@@ -1,7 +1,8 @@
 import { useDispatch, useSelector } from '@/store'
 import { postActions } from '@/store/post'
 import { Autocomplete, Box, MenuItem, TextField } from '@mui/material'
-import React from 'react'
+import React, { useEffect } from 'react'
+import LoadingFilter from '../Loading/LoadingFilter'
 const category = [
       {
             value: 'all',
@@ -33,42 +34,48 @@ const FilterSection = () => {
             }
       }
       return (
-            <Box>
-                  <Autocomplete
-                        sx={{
-                              display: 'flex',
-                              margin: '0 auto',
-                              width: '80%',
-                              '& .MuiAutocomplete-inputRoot': {
-                                    fontFamily: 'var(--font-montserrat)',
-                              },
-                        }}
-
-                        multiple
-                        options={category}
-                        getOptionLabel={(option) => option.label}
-                        onChange={(event, value) => {
-                              const selectedCategories = value.map((option) => option.value)
-                              if (selectedCategories.includes('all')) {
-                                    handleFilter(['all'])
-                              } else {
-                                    handleFilter(selectedCategories)
-                              }
-                        }}
-                        renderInput={(params) => (
-                              <TextField
+            <>
+                  {posts?.length === 0 ? (
+                        <LoadingFilter />
+                  ) : (
+                        <Box>
+                              <Autocomplete
                                     sx={{
-                                          '& .MuiTextField-root': {
-                                                fontFamily: 'var(--font-montserrat)'
+                                          display: 'flex',
+                                          margin: '0 auto',
+                                          width: '80%',
+                                          '& .MuiAutocomplete-inputRoot': {
+                                                fontFamily: 'var(--font-montserrat)',
+                                          },
+                                    }}
+
+                                    multiple
+                                    options={category}
+                                    getOptionLabel={(option) => option.label}
+                                    onChange={(event, value) => {
+                                          const selectedCategories = value.map((option) => option.value)
+                                          if (selectedCategories.includes('all')) {
+                                                handleFilter(['all'])
+                                          } else {
+                                                handleFilter(selectedCategories)
                                           }
                                     }}
-                                    {...params}
-                                    variant='outlined'
-                                    label='Category'
+                                    renderInput={(params) => (
+                                          <TextField
+                                                sx={{
+                                                      '& .MuiTextField-root': {
+                                                            fontFamily: 'var(--font-montserrat)'
+                                                      }
+                                                }}
+                                                {...params}
+                                                variant='outlined'
+                                                label='Category'
+                                          />
+                                    )}
                               />
-                        )}
-                  />
-            </Box>
+                        </Box>
+                  )}
+            </>
       )
 }
 

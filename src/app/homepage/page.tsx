@@ -1,4 +1,3 @@
-import React from 'react'
 import PostPage from '../components/Posts'
 import FilterSection from '../components/Posts/FilterSection'
 

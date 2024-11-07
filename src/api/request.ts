@@ -10,9 +10,7 @@ const request = (url: string, options: AxiosRequestConfig & {isAuthorized?:boole
     ...(options.isAuthorized ? { Authorization: `Bearer ${getTokenCookie()}` } : {}),
   };
   if (options.method === 'GET') {
-    // Đảm bảo rằng params được truyền đúng cấu trúc
-    options.params = data;  // Truyền trực tiếp `data` vào `params`
-    console.log('Params:', options.params); // Kiểm tra params
+    options.params = data; 
   } else {
     options.data = data;
   }

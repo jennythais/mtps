@@ -1,7 +1,7 @@
 export namespace AppTypes {
      export type Status = 'Public' | 'Private';
      export type Point = 3 | 5 | 7 | 10;
-     export type Category = "Academic" | "Volunteer" | "Mental Physical";
+     export type Category = "All" | "Academic" | "Volunteer" | "Mental Physical";
 
      export interface LoginRequest {
           email: string;
@@ -17,8 +17,8 @@ export namespace AppTypes {
           email: string;
      }
      export interface ChangePasswordRequest {
-          id: string;
-          password: string;
+          id?: string;
+          currentPassword: string;
           newPassword: string;
      }
      export interface ResetPasswordRequest{
