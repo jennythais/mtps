@@ -12,6 +12,7 @@ import Link from 'next/link';
 import IconifyIcon from '../components/@shared/icon/IconifyIcon';
 import { useRouter } from 'next/navigation';
 import LoadingButton from '@mui/lab/LoadingButton'
+import { userActions } from '@/store/me';
 
 interface FormData {
      email: string;
@@ -44,8 +45,10 @@ const Login = () => {
                     password
                })
           )
+
           if (result.meta.requestStatus === 'fulfilled') {
                toast.success('Login successful')
+
                router.push('/')
           }
      }

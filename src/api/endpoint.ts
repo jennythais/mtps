@@ -20,12 +20,14 @@ const endpoints = {
 
      // Post
      getPosts: 'GET /api/posts',
+     getPostsAssistant: 'GET /api/posts-assistant',
      getPostById: 'GET /api/post_by_id/{postID}',
      getExpiredPosts: 'GET /api/expired_posts',
      getPostByCategory: 'GET /api/post_by_category',
      getListAttendees: 'GET /api/list_attendees/{id}',
      createPost: 'POST /api/create_post',
      updatePost: 'PUT /api/update_post',
+     joinPost: 'POST /api/join_post',
      checkAttendance: 'PUT /api/check_attendance',
 
      // Test   

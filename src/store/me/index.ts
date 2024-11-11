@@ -7,6 +7,7 @@ export interface MeState{
      user?: AppTypes.User;
      loading: {[x: string]: boolean};
      error?: string;
+     userPoint?: AppTypes.PointCategory;
 }
 export const initialState: MeState = {
      user: undefined,
@@ -16,6 +17,10 @@ const getUser = createAsyncThunk(`${SLICE_NAME.ME}/getUser`, async (_,{rejectWit
      const data = await api.getProfile<AppTypes.User>();
      return data;
 
+})
+const getPoint = createAsyncThunk(`${SLICE_NAME.ME}/getPoint`, async (form: {id: string}) => {
+     const data = await api.pointCategory<AppTypes.PointCategory>(form);
+     return data;
 })
 const resetPassword = createAsyncThunk(`${SLICE_NAME.AUTH}/resetPassword`, async(form: AppTypes.ResetPasswordRequest ) => {
      const res = await api.resetPassword<AppTypes.ResetPasswordRequest>(form);
@@ -45,7 +50,18 @@ export const userSlice = createSlice({
                state.loading[getUser.typePrefix] = false;
                state.error = action.error.message;
           })
-                    builder.addCase(changePassword.pending, (state, {payload}) => {
+          builder.addCase(getPoint.pending, (state, action) => {
+               state.loading[getPoint.typePrefix] = true;
+          })
+          builder.addCase(getPoint.fulfilled, (state, action) => {
+               state.loading[getPoint.typePrefix] = false;
+               state.userPoint = action.payload.data.data;
+          })
+          builder.addCase(getPoint.rejected, (state, action) => {
+               state.loading[getPoint.typePrefix] = false;
+               state.error = action.error.message;
+          })
+          builder.addCase(changePassword.pending, (state, {payload}) => {
                state.loading[changePassword.typePrefix] = true
           })
           builder.addCase(changePassword.fulfilled, (state, {payload}) => {
@@ -69,6 +85,7 @@ export default userSlice.reducer;
 export const userActions = {
      ...userSlice.actions,
      getUser,
+     getPoint,
      changePassword,
      resetPassword
 }

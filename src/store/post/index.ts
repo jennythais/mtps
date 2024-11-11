@@ -4,7 +4,9 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import api from "@/api";
 interface InitialState {
      posts?: AppTypes.Post[];
+     postsAssistant?: AppTypes.Post[];
      postById?: AppTypes.Post;
+     postJoin?: AppTypes.Post;
      postFilter?: AppTypes.Post[];
      loading: {
           [key: string]: boolean;
@@ -15,12 +17,17 @@ export const initialState: InitialState = {
      posts: [],
      postById: undefined,
      postFilter: [],
+     postsAssistant: [],
      loading: {}
 }
 
 
 const getPost = createAsyncThunk(`${SLICE_NAME.POST}/getPost`, async (_, { rejectWithValue }) => {
      const res = await api.getPosts<AppTypes.Post[]>();
+     return res;
+})
+const getPostAssistant = createAsyncThunk(`${SLICE_NAME.POST}/getPostAssistant`, async (_, { rejectWithValue }) => {
+     const res = await api.getPostsAssistant<AppTypes.Post[]>();
      return res;
 })
 const getPostById  = createAsyncThunk(`${SLICE_NAME.POST}/getPostById`, async (id: string, { rejectWithValue }) => {
@@ -33,6 +40,10 @@ const getPostByCategory = createAsyncThunk(`${SLICE_NAME.POST}/getPostByCategory
      });
      return res
 })
+const joinPost = createAsyncThunk(`${SLICE_NAME.POST}/joinPost`, async (form: AppTypes.JoinPostRequest ) => {
+     const res = await api.joinPost<AppTypes.JoinPostRequest>(form);
+     return res
+})
 export const postSlice = createSlice({
      name: SLICE_NAME.POST,
      initialState: initialState,
@@ -40,12 +51,16 @@ export const postSlice = createSlice({
           setPost: (state, { payload }: PayloadAction<AppTypes.Post[]>) => {
                state.posts = payload
           },
+          setPostAssistant: (state, { payload }: PayloadAction<AppTypes.Post[]>) => {
+               state.postsAssistant = payload
+          },
           setPostById: (state, { payload }: PayloadAction<AppTypes.Post>) => {
                state.postById = payload
           },
           setPostFilter: (state, { payload }: PayloadAction<AppTypes.Post[]>) => {
-                                   state.postFilter = payload; 
-          }
+               state.postFilter = payload; 
+          },
+
      },
   extraReducers: builder => {
      builder.addCase(getPost.pending, (state, action) => {
@@ -57,6 +72,17 @@ export const postSlice = createSlice({
      })
      builder.addCase(getPost.rejected, (state, action) => {
           state.loading[getPost.typePrefix] = false;
+          state.error = action.error.message;
+     })
+     builder.addCase(getPostAssistant.pending, (state, action) => {
+          state.loading[getPostAssistant.typePrefix] = true;
+     })
+     builder.addCase(getPostAssistant.fulfilled, (state, action) => {
+          state.loading[getPostAssistant.typePrefix] = false;
+          state.postsAssistant = action.payload?.data.data;
+     })
+     builder.addCase(getPostAssistant.rejected, (state, action) => {
+          state.loading[getPostAssistant.typePrefix] = false;
           state.error = action.error.message;
      })
      builder.addCase(getPostById.pending, (state, action) => {
@@ -81,12 +107,24 @@ export const postSlice = createSlice({
           state.loading[getPostByCategory.typePrefix] = false;
           state.error = action.error.message;
      })
+     builder.addCase(joinPost.pending, (state, action) => {
+          state.loading[joinPost.typePrefix] = true;
+     })
+     builder.addCase(joinPost.fulfilled, (state, action) => {
+          state.loading[joinPost.typePrefix] = false;
+     })
+     builder.addCase(joinPost.rejected, (state, action) => {
+          state.loading[joinPost.typePrefix] = false;
+          state.error = action.error.message;     
+     })   
   }
 })
 export default postSlice.reducer;
 export const postActions = {
      ...postSlice.actions,
      getPost,
+     getPostAssistant,
      getPostById,
-     getPostByCategory
+     getPostByCategory,
+     joinPost
 }

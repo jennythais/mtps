@@ -26,10 +26,6 @@ const NavbarVertical = () => {
      const dispatch = useDispatch();
      const { user, loading } = useSelector((state) => state.me);
      const router = useRouter();
-     useEffect(() => {
-          dispatch(userActions.getUser());
-     }, [dispatch]);
-
      const pathname = usePathname().split('/')[1];
      const handleLogout = () => {
           dispatch(authActions.logout());
