@@ -12,12 +12,17 @@ import ButtonPost from '../@shared/Button/ButtonPost';
 import ChipCategory from '../@shared/chip/ChipCategory';
 import LoadingPost from '../Loading/LoadingPost';
 import DialogConfirm from './DialogConfirm';
+import EditSection from './EditSection';
+import { AppTypes } from '@/types';
 
 const PostPage = () => {
      const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
      const [showDialog, setShowDialog] = useState(false)
+     const [showEditSection, setShowEditSection] = useState(false)
      const { posts, postFilter, loading, postsAssistant } = useSelector((state) => state.post)
      const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
+     const [selectedPostToEdit, setSelectedPostToEdit] = useState<string | null>(null);
+     const [location, setLocation] = useState<string | null>(null);
      const [joined, setJoined] = useState<string[]>([])
      const { user } = useSelector((state) => state.me)
      const dispatch = useDispatch()
@@ -34,14 +39,19 @@ const PostPage = () => {
           }
      }, [user])
      const open = Boolean(anchorEl);
-     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+     const handleClick = (event: React.MouseEvent<HTMLElement>, postId: string, location: string) => {
           setAnchorEl(event.currentTarget);
+          setSelectedPostToEdit(postId);
+          setLocation(location);
      }
      const handleClose = () => {
           setAnchorEl(null);
      }
      const handleCloseDialog = () => {
           setShowDialog(false)
+     }
+     const handleCloseEditSection = () => {
+          setShowEditSection(false)
      }
      const handleOpenDialog = (postId: string | null) => {
           setSelectedPostId(postId);
@@ -55,14 +65,14 @@ const PostPage = () => {
      useEffect(() => {
           if (user && posts) {
                const joinedPosts = posts
-                    .filter((post) => post?.stdJoin?.some((std) => std === user.id))
+                    .filter((post : AppTypes.Post) => post?.stdJoin?.some((std) => std === user.id))
                     .map((post) => post.id);
                setJoined(joinedPosts);
           }
      }, [user, posts])
      const dataDisplay = user?.role === 'student'
           ? (Array.isArray(postFilter) && postFilter.length === 0 ? posts : postFilter)
-          : postsAssistant;
+          : (postsAssistant ? [...postsAssistant].sort((a) => (a.facultyName === user?.facultyName ? -1 : 1)) : []);
      return (
           <>
                {loading[postActions.getPost.typePrefix] ? (<LoadingPost />) : (
@@ -84,9 +94,17 @@ const PostPage = () => {
                                              title={item?.facultyName}
 
                                              action={
-                                                  user?.role === 'assistant' && (
-                                                       <IconButton id='button-post' aria-controls={open ? 'action-menu' : undefined} aria-haspopup="true"
-                                                            aria-expanded={open ? 'true' : undefined} onClick={handleClick}
+                                                  user?.role === 'assistant' && item.facultyName === user.facultyName && (
+                                                       <IconButton
+                                                            id='button-post'
+                                                            aria-controls={open ? 'action-menu' : undefined}
+                                                            aria-haspopup="true"
+                                                            aria-expanded={open ? 'true' : undefined}
+                                                            onClick={(e) => {
+                                                                 e.stopPropagation();
+                                                                 console.log(item.id);
+                                                                 handleClick(e, item.id, item.location);
+                                                            }}
                                                        >
                                                             <MoreVertIcon />
                                                        </IconButton>
@@ -151,12 +169,18 @@ const PostPage = () => {
                          <Menu id='action-menu' anchorEl={anchorEl} open={open} onClose={handleClose} MenuListProps={{
                               'aria-labelledby': 'button-post',
                          }}>
-                              <MenuItem>Edit</MenuItem>
+                              <MenuItem onClick={() => {
+                                   setShowEditSection(true)
+                                   handleClose()
+                              }
+                              }>Edit</MenuItem>
                          </Menu>
                          <DialogConfirm open={showDialog} onClose={handleCloseDialog} onConfirm={() => selectedPostId && handleConfirm(selectedPostId)}
                          />
+                         <EditSection open={showEditSection} onClose={handleCloseEditSection} postId={selectedPostToEdit || ''} location={location || ''} />
                     </>
-               )}
+               )
+               }
           </>
      )
 }

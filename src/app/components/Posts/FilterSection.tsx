@@ -23,11 +23,11 @@ const category = [
 ]
 const FilterSection = () => {
       const dispatch = useDispatch()
-      const { posts } = useSelector((state) => state.post)
+      const { posts , postsAssistant} = useSelector((state) => state.post)
       const handleFilter = (value: string[]) => {
             if (value.length === 0 || value.includes('all')) {
-                  if (posts) {
-                        dispatch(postActions.setPostFilter(posts))
+                  if (posts || postsAssistant) {
+                        dispatch(postActions.setPostFilter(posts ? posts : postsAssistant || []))
                   }
             } else {
                   dispatch(postActions.getPostByCategory(value))
@@ -35,7 +35,7 @@ const FilterSection = () => {
       }
       return (
             <>
-                  {posts?.length === 0 ? (
+                  {posts?.length || postsAssistant?.length === 0 ? (
                         <LoadingFilter />
                   ) : (
                         <Box>

@@ -30,8 +30,8 @@ const getPostAssistant = createAsyncThunk(`${SLICE_NAME.POST}/getPostAssistant`,
      const res = await api.getPostsAssistant<AppTypes.Post[]>();
      return res;
 })
-const getPostById  = createAsyncThunk(`${SLICE_NAME.POST}/getPostById`, async (id: string, { rejectWithValue }) => {
-     const res = await api.getPostById<AppTypes.Post>(id);
+const getPostById  = createAsyncThunk(`${SLICE_NAME.POST}/getPostById`, async (postID: string, { rejectWithValue }) => {
+     const res = await api.getPostById<AppTypes.Post>({postID});
      return res;
 })
 const getPostByCategory = createAsyncThunk(`${SLICE_NAME.POST}/getPostByCategory`, async (categories: string[]) => {
@@ -42,6 +42,10 @@ const getPostByCategory = createAsyncThunk(`${SLICE_NAME.POST}/getPostByCategory
 })
 const joinPost = createAsyncThunk(`${SLICE_NAME.POST}/joinPost`, async (form: AppTypes.JoinPostRequest ) => {
      const res = await api.joinPost<AppTypes.JoinPostRequest>(form);
+     return res
+})
+const updatePost = createAsyncThunk(`${SLICE_NAME.POST}/updatePost`, async (form: AppTypes.UpdatePostRequest) => {
+     const res = await api.updatePost<AppTypes.UpdatePostRequest>(form);
      return res
 })
 export const postSlice = createSlice({
@@ -117,6 +121,16 @@ export const postSlice = createSlice({
           state.loading[joinPost.typePrefix] = false;
           state.error = action.error.message;     
      })   
+     builder.addCase(updatePost.pending, (state, action) => {
+          state.loading[updatePost.typePrefix] = true;
+     })
+     builder.addCase(updatePost.fulfilled, (state, action) => {
+          state.loading[updatePost.typePrefix] = false;
+     })
+     builder.addCase(updatePost.rejected, (state, action) => {
+          state.loading[updatePost.typePrefix] = false;
+          state.error = action.error.message;
+     })
   }
 })
 export default postSlice.reducer;
@@ -126,5 +140,6 @@ export const postActions = {
      getPostAssistant,
      getPostById,
      getPostByCategory,
-     joinPost
+     joinPost,
+     updatePost
 }

@@ -77,4 +77,35 @@ export namespace AppTypes {
           trainingPoint: PointCategory
           activities: string[];
      }
+     export interface Test {
+          testId: string;
+          questions: Question[];
+          target: number;
+     }
+     export interface Question{
+          question: string;
+          options: Options[];
+          correctOption: string;
+     }
+     export interface Options{
+          id: string;
+          text: string;
+     }
+     export interface UpdatedPostData{
+          name: string;
+          desc: string;
+          endDate: string;
+          endTime: string;
+          numberParticipants: number;
+     }
+     export interface UpdatedTestData{
+          questions: Question[];
+          target: number;
+     }
+     export interface UpdatePostRequest{
+          postId: string;
+          updatedPostData: UpdatedPostData;
+          updatedTestData: UpdatedTestData;
+          location: string;
+     }
 }
