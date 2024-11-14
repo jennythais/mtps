@@ -14,14 +14,17 @@ import LoadingPost from '../Loading/LoadingPost';
 import DialogConfirm from './DialogConfirm';
 import EditSection from './EditSection';
 import { AppTypes } from '@/types';
+import CheckAttendees from './CheckAttendees';
 
 const PostPage = () => {
      const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
      const [showDialog, setShowDialog] = useState(false)
      const [showEditSection, setShowEditSection] = useState(false)
+     const [showCheckAttendees, setShowCheckAttendees] = useState(false)
      const { posts, postFilter, loading, postsAssistant } = useSelector((state) => state.post)
      const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
      const [selectedPostToEdit, setSelectedPostToEdit] = useState<string | null>(null);
+     const [selectedPostToCheck, setSelectedPostToCheck] = useState<string | null>(null);
      const [location, setLocation] = useState<string | null>(null);
      const [joined, setJoined] = useState<string[]>([])
      const { user } = useSelector((state) => state.me)
@@ -42,6 +45,7 @@ const PostPage = () => {
      const handleClick = (event: React.MouseEvent<HTMLElement>, postId: string, location: string) => {
           setAnchorEl(event.currentTarget);
           setSelectedPostToEdit(postId);
+          setSelectedPostToCheck(postId);
           setLocation(location);
      }
      const handleClose = () => {
@@ -65,7 +69,7 @@ const PostPage = () => {
      useEffect(() => {
           if (user && posts) {
                const joinedPosts = posts
-                    .filter((post : AppTypes.Post) => post?.stdJoin?.some((std) => std === user.id))
+                    .filter((post: AppTypes.Post) => post?.stdJoin?.some((std) => std === user.id))
                     .map((post) => post.id);
                setJoined(joinedPosts);
           }
@@ -165,19 +169,25 @@ const PostPage = () => {
                                         </CardContent>
                                    </Card>
                               ))}
+                              <Menu
+                                   id='action-menu'
+                                   anchorEl={anchorEl}
+                                   open={open}
+                                   onClose={handleClose}
+                                   MenuListProps={{ 'aria-labelledby': 'button-post' }}
+                              >
+                                   <MenuItem onClick={() => { setShowEditSection(true); handleClose(); }}>Edit</MenuItem>
+                                   {location !== 'Online' && (
+                                        <MenuItem onClick={() => { setShowCheckAttendees(true); handleClose(); }}>Check attendees</MenuItem>
+                                   )}
+                              </Menu>
+                              <DialogConfirm open={showDialog} onClose={handleCloseDialog} onConfirm={() => selectedPostId && handleConfirm(selectedPostId)}
+                              />
+                              <EditSection open={showEditSection} onClose={handleCloseEditSection} postId={selectedPostToEdit || ''} location={location || ''} />
+                              <CheckAttendees open={showCheckAttendees} onClose={() => setShowCheckAttendees(false)} postId={selectedPostToCheck || ''} />
                          </Box>
-                         <Menu id='action-menu' anchorEl={anchorEl} open={open} onClose={handleClose} MenuListProps={{
-                              'aria-labelledby': 'button-post',
-                         }}>
-                              <MenuItem onClick={() => {
-                                   setShowEditSection(true)
-                                   handleClose()
-                              }
-                              }>Edit</MenuItem>
-                         </Menu>
-                         <DialogConfirm open={showDialog} onClose={handleCloseDialog} onConfirm={() => selectedPostId && handleConfirm(selectedPostId)}
-                         />
-                         <EditSection open={showEditSection} onClose={handleCloseEditSection} postId={selectedPostToEdit || ''} location={location || ''} />
+
+
                     </>
                )
                }

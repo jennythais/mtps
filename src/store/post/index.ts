@@ -48,6 +48,10 @@ const updatePost = createAsyncThunk(`${SLICE_NAME.POST}/updatePost`, async (form
      const res = await api.updatePost<AppTypes.UpdatePostRequest>(form);
      return res
 })
+const checkAttendees = createAsyncThunk(`${SLICE_NAME.POST}/checkAttendees`, async (form: {studentId: string, postId: string}) => {
+     const res = await api.checkAttendance(form);
+     return res
+})
 export const postSlice = createSlice({
      name: SLICE_NAME.POST,
      initialState: initialState,
@@ -131,6 +135,16 @@ export const postSlice = createSlice({
           state.loading[updatePost.typePrefix] = false;
           state.error = action.error.message;
      })
+     builder.addCase(checkAttendees.pending, (state, action) => {
+          state.loading[checkAttendees.typePrefix] = true;
+     })
+     builder.addCase(checkAttendees.fulfilled, (state, action) => {
+          state.loading[checkAttendees.typePrefix] = false;
+     })
+     builder.addCase(checkAttendees.rejected, (state, action) => {
+          state.loading[checkAttendees.typePrefix] = false;
+          state.error = action.error.message;
+     })
   }
 })
 export default postSlice.reducer;
@@ -141,5 +155,6 @@ export const postActions = {
      getPostById,
      getPostByCategory,
      joinPost,
-     updatePost
+     updatePost,
+     checkAttendees
 }

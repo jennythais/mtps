@@ -28,7 +28,7 @@ const endpoints = {
      createPost: 'POST /api/create_post',
      updatePost: 'PUT /api/update_post',
      joinPost: 'POST /api/join_post',
-     checkAttendance: 'PUT /api/check_attendance',
+     checkAttendance: 'POST /api/check_attendance',
 
      // Test   
      getTests: 'GET /api/tests/{testId}',
