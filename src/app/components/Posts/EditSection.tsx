@@ -111,30 +111,6 @@ const EditSection = ({ open, onClose, location, postId }: EditSectionProps) => {
       onClose();
     }
   }
-  // const onSubmit = (data: FormData) => {
-  //   const { name, desc, endTime, endDate, numberParticipants, questions, target } = data;
-  //   console.log(data);
-  //   const updatedPostData: AppTypes.UpdatedPostData = {
-  //     name,
-  //     desc,
-  //     endTime: dayjs(endTime).format("hh:mm A"),
-  //     endDate: dayjs(endDate).format("YYYY-MM-DD"),
-  //     numberParticipants
-  //   }
-  //   const updatedTestData: AppTypes.UpdatedTestData = {
-  //     questions,
-  //     target
-  //   }
-  //   const form: AppTypes.UpdatePostRequest = {
-  //     postId,
-  //     updatedPostData,
-  //     updatedTestData,
-  //     location: location || ''
-  //   }
-  //   console.log(form);
-  //   handleClose && handleClose();
-  //   // dispatch(postActions.updatePost(form))
-  // }
   const handleConfirm = async () => {
     const data = getValues();
     const { name, desc, endTime, endDate, numberParticipants, questions, target } = data;

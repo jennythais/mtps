@@ -16,6 +16,28 @@ export namespace AppTypes {
      export interface EmailRequest {
           email: string;
      }
+     export interface CreatePostRequest {
+          name: string;
+          desc: string;
+          facultyName: string;
+          status: Status;
+          startDate: Date;
+          startTime: Date;
+          endDate: Date;
+          endTime: Date;
+          location: string;
+          point: Point;
+          numberParticipants: number;
+          category: Category;
+          semester: string;
+          yearStart?: number;
+          yearEnd?: number;
+          test?: CreateTestRequest;
+     }
+     export interface CreateTestRequest {
+          questions: Question[];
+          target: number;
+     }
      export interface ChangePasswordRequest {
           id?: string;
           currentPassword: string;

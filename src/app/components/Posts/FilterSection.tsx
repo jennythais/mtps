@@ -23,7 +23,7 @@ const category = [
 ]
 const FilterSection = () => {
       const dispatch = useDispatch()
-      const { posts , postsAssistant} = useSelector((state) => state.post)
+      const { posts, postsAssistant } = useSelector((state) => state.post)
       const handleFilter = (value: string[]) => {
             if (value.length === 0 || value.includes('all')) {
                   if (posts || postsAssistant) {
@@ -38,12 +38,12 @@ const FilterSection = () => {
                   {posts?.length || postsAssistant?.length === 0 ? (
                         <LoadingFilter />
                   ) : (
-                        <Box>
+                        <Box sx={{
+                              width: '85%',
+                        }}>
                               <Autocomplete
                                     sx={{
-                                          display: 'flex',
-                                          margin: '0 auto',
-                                          width: '80%',
+
                                           '& .MuiAutocomplete-inputRoot': {
                                                 fontFamily: 'var(--font-montserrat)',
                                           },

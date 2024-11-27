@@ -106,7 +106,6 @@ const PostPage = () => {
                                                             aria-expanded={open ? 'true' : undefined}
                                                             onClick={(e) => {
                                                                  e.stopPropagation();
-                                                                 console.log(item.id);
                                                                  handleClick(e, item.id, item.location);
                                                             }}
                                                        >
