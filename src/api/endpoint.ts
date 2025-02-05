@@ -1,8 +1,7 @@
 const endpoints = {
      // Assistant
-     getStudent: 'GET /api/students',
-     getStudentByFaculty: 'GET /api/student-by-faculty/{faculty}',
-     searchStudent: 'POST /api/search-student',
+     getStudents: 'GET /api/students',
+     getStudentsByFaculty: 'GET /api/student-by-faculty/:faculty',
      updateDiscipline: 'PUT /api/update-discipline',
 
      // Auth

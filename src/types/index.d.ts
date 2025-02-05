@@ -2,7 +2,10 @@ export namespace AppTypes {
      export type Status = 'Public' | 'Private';
      export type Point = 3 | 5 | 7 | 10;
      export type Category = "All" | "Academic" | "Volunteer" | "Mental Physical" | 'Discipline' | 'Reward' | 'Pioneering';
-
+     export interface Faculty {
+          name: string;
+          value: string;
+     }
      export interface LoginRequest {
           email: string;
           password: string;
@@ -30,9 +33,6 @@ export namespace AppTypes {
           numberParticipants: number;
           category: Category;
           semester: string;
-          yearStart?: number;
-          yearEnd?: number;
-          test?: CreateTestRequest;
      }
      export interface CreateTestRequest {
           questions: Question[];
@@ -56,10 +56,10 @@ export namespace AppTypes {
           name: string;
           desc: string;
           status: Status;
-          startTime: string;
-          startDate: string;
-          endDate: string;
-          endTime: string;
+          startTime: Date;
+          startDate: Date;
+          endDate: Date;
+          endTime: Date;
           location: string;
           numberParticipants: number;
           facultyName: string;
@@ -129,5 +129,13 @@ export namespace AppTypes {
           updatedPostData: UpdatedPostData;
           updatedTestData: UpdatedTestData;
           location: string;
+     }
+     export interface Student{
+          id: string;
+          name: string;
+          email: string;
+          facultyName: string;
+          trainingPoint: PointCategory;
+          activities: string[];
      }
 }

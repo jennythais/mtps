@@ -1,9 +1,7 @@
 import { useDispatch, useSelector } from '@/store';
 import { postActions } from '@/store/post';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import GroupsIcon from '@mui/icons-material/Groups';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
+import { AppTypes } from '@/types';
+import { formatDateTime } from '@/utils/formatDateTime';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Box, Card, CardContent, CardHeader, IconButton, Menu, MenuItem, Stack, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
@@ -11,11 +9,9 @@ import AvatarColor from '../@shared/avatar/AvatarColor';
 import ButtonPost from '../@shared/Button/ButtonPost';
 import ChipCategory from '../@shared/chip/ChipCategory';
 import LoadingPost from '../Loading/LoadingPost';
+import CheckAttendees from './CheckAttendees';
 import DialogConfirm from './DialogConfirm';
 import EditSection from './EditSection';
-import { AppTypes } from '@/types';
-import CheckAttendees from './CheckAttendees';
-
 const PostPage = () => {
      const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
      const [showDialog, setShowDialog] = useState(false)
@@ -132,28 +128,34 @@ const PostPage = () => {
                                                   mb: 2
                                              }}>
                                                   <Typography variant='h6'>{item?.name}</Typography>
-                                                  <Typography variant='body1'>{item?.desc}</Typography>
+                                                  <Typography variant='body1' sx={{
+                                                       fontStyle: 'italic',
+                                                  }}>{item?.desc}</Typography>
                                              </Box>
                                              <Box sx={{
                                                   display: 'flex',
                                                   flexDirection: 'column',
                                                   gap: 2
                                              }}>
-                                                  <Stack direction='row' alignItems='center' spacing={2}>
-                                                       <GroupsIcon />
-                                                       <Typography variant='body2'>{item?.numberParticipants}</Typography>
+                                                  <Stack direction='row' alignItems='center' spacing={1}>
+                                                       <Typography sx={{ fontSize: '16px', fontWeight: 500 }}>Number of participants: </Typography>
+                                                       <Typography sx={{ fontSize: '16px' }}>{item?.numberParticipants}</Typography>
                                                   </Stack>
-                                                  <Stack direction='row' alignItems='center' spacing={2}>
-                                                       <LocationOnIcon />
-                                                       <Typography variant='body2'>{item?.location}</Typography>
+                                                  <Stack direction='row' alignItems='center' spacing={1}>
+                                                       <Typography sx={{ fontSize: '16px', fontWeight: 500 }}>Location: </Typography>
+                                                       <Typography sx={{ fontSize: '16px' }}>{item?.location}</Typography>
                                                   </Stack>
-                                                  <Stack direction='row' alignItems='center' spacing={2}>
-                                                       <AccessTimeIcon />
-                                                       <Typography variant='body2'>{item?.startTime} - {item?.endTime}</Typography>
+                                                  <Stack direction='row' alignItems='center' spacing={1}>
+                                                       <Typography sx={{ fontSize: '16px', fontWeight: 500 }}>Start at: </Typography>
+                                                       <Typography sx={{ fontSize: '16px' }}>
+                                                            {formatDateTime(item?.startDate, item?.startTime)}
+                                                       </Typography>
                                                   </Stack>
-                                                  <Stack direction='row' alignItems='center' spacing={2}>
-                                                       <CalendarMonthIcon />
-                                                       <Typography variant='body2'>{item?.startDate} - {item?.endDate}</Typography>
+                                                  <Stack direction='row' alignItems='center' spacing={1}>
+                                                       <Typography sx={{ fontSize: '16px', fontWeight: 500 }}>Finish at: </Typography>
+                                                       <Typography sx={{ fontSize: '16px' }}>
+                                                            {formatDateTime(item?.endDate, item?.endTime)}
+                                                       </Typography>
                                                   </Stack>
                                              </Box>
                                              {user?.role === 'student' && (

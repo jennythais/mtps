@@ -5,7 +5,9 @@ import CreatePost from '../components/Posts/CreatePost'
 
 const Homepage = () => {
   return (
-    <div className='bg-homepage' >
+    <Box sx={{
+      backgroundColor: '#F4F6FF'
+    }}>
       <Box sx={{
         display: 'flex',
         gap: 2,
@@ -16,7 +18,7 @@ const Homepage = () => {
         <CreatePost />
       </Box>
       <PostPage />
-    </div>
+    </Box>
   )
 }
 

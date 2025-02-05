@@ -44,11 +44,6 @@ const NavbarVertical = () => {
                     segment: '/update-discipline-point',
                     title: 'Update Discipline Point',
                     icon: <AutorenewIcon />,
-               },
-               {
-                    segment: '/create-post',
-                    title: 'Create Post',
-                    icon: <CreateIcon />,
                }
           ] : []),
           {

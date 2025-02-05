@@ -4,4 +4,5 @@ export enum SLICE_NAME {
      ME = 'ME',
      LOAD = 'LOAD',
      TEST = 'TEST',
+     ASSISTANT = 'ASSISTANT',
 }

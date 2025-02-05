@@ -53,7 +53,7 @@ const Login = () => {
           }
      }
      return (
-          <div className='pattern-login'>
+          <div>
                <Box sx={{
                     display: 'flex',
                     flexDirection: 'column',

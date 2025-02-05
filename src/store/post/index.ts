@@ -1,9 +1,14 @@
 import { SLICE_NAME } from "@/constants/slice";
 import { AppTypes } from "@/types";
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAsyncThunk, createEntityAdapter, createSlice, EntityState, PayloadAction } from "@reduxjs/toolkit";
 import api from "@/api";
+const postAdapter = createEntityAdapter<AppTypes.Post, string>({
+     selectId: post => post.id
+})
 interface InitialState {
      posts?: AppTypes.Post[];
+     postsEntity: EntityState<AppTypes.Post, string>;
+
      postsAssistant?: AppTypes.Post[];
      postById?: AppTypes.Post;
      postJoin?: AppTypes.Post;
@@ -14,7 +19,8 @@ interface InitialState {
      error?: string;
 }
 export const initialState: InitialState = {
-     posts: [],
+     posts: undefined,
+     postsEntity: postAdapter.getInitialState(),
      postById: undefined,
      postFilter: [],
      postsAssistant: [],
@@ -51,6 +57,14 @@ const updatePost = createAsyncThunk(`${SLICE_NAME.POST}/updatePost`, async (form
 const checkAttendees = createAsyncThunk(`${SLICE_NAME.POST}/checkAttendees`, async (form: {studentId: string, postId: string}) => {
      const res = await api.checkAttendance(form);
      return res
+})
+const createPost = createAsyncThunk(`${SLICE_NAME.POST}/createPost`, async (form: AppTypes.CreatePostRequest, {rejectWithValue}) => {
+     try {
+          const res = await api.createPost<AppTypes.CreatePostRequest>(form);
+          return res
+     } catch (error) {
+          return rejectWithValue(error)  
+     }
 })
 export const postSlice = createSlice({
      name: SLICE_NAME.POST,
@@ -145,6 +159,16 @@ export const postSlice = createSlice({
           state.loading[checkAttendees.typePrefix] = false;
           state.error = action.error.message;
      })
+     builder.addCase(createPost.pending, (state, action) => {
+          state.loading[createPost.typePrefix] = true;
+     })
+     builder.addCase(createPost.fulfilled, (state, action) => {
+          state.loading[createPost.typePrefix] = false;
+     })
+     builder.addCase(createPost.rejected, (state, action) => {
+          state.loading[createPost.typePrefix] = false;
+          state.error = action.error.message;
+     })
   }
 })
 export default postSlice.reducer;
@@ -156,5 +180,6 @@ export const postActions = {
      getPostByCategory,
      joinPost,
      updatePost,
-     checkAttendees
+     checkAttendees,
+     createPost
 }

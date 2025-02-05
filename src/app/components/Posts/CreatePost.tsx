@@ -3,10 +3,13 @@ import { Box, Button, Dialog, DialogContent, DialogTitle, Tab, Table, TableBody,
 import React, { useState } from 'react'
 import DialogCreateActivity from './DialogCreateActivity'
 import DialogCreateTest from './DialogCreateTest'
+import { useNewActivityDialog } from '@/app/create-post/NewActivityDialog'
+import { useSelector } from '@/store'
 
 const CreatePost = () => {
   const [showDialogCreate, setShowDialogCreate] = useState(false)
   const [value, setValue] = React.useState('1');
+  const { posts, postsAssistant } = useSelector((state) => state.post)
   const handleOpenDialogCreate = () => {
     setShowDialogCreate(true)
   }
@@ -18,13 +21,17 @@ const CreatePost = () => {
   }
   return (
     <>
-      <Button variant='outlined' onClick={handleOpenDialogCreate}>
-        Create Post
-      </Button>
+      {posts?.length || postsAssistant?.length === 0 ? (
+        ''
+      ) : (
+        <Button variant='outlined' onClick={handleOpenDialogCreate}>
+          Create Post
+        </Button>
+      )}
 
       <Dialog open={showDialogCreate} sx={{
         '& .MuiDialog-paper': {
-          width: '90%',
+          maxWidth: '60%',
           padding: '20px'
         }
       }}>

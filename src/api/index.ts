@@ -15,24 +15,29 @@ interface IOption{
      params?: object;
 }
 const gen = (params: string, baseURL?: string) => {
-     let url = params
-     let method: Method = 'GET'
+  let url = params;
+  let method: Method = 'GET';
 
-     const paramsArray = params.split(' ')
-     if (paramsArray.length === 2) {
-          method = paramsArray[0] as Method
-          url = paramsArray[1]
-     }
-     return function (data?: any, options?: IOption) {
-          return request(url, {
-               data: data,
-               method: method,
-               params: options?.params,
-               baseURL,
-               headers: options?.headers
-          })
-     }
-}
+  const paramsArray = params.split(' ');
+  if (paramsArray.length === 2) {
+    method = paramsArray[0] as Method;
+    url = paramsArray[1];
+  }
+
+  return function (data?: any, options?: IOption) {
+    // Replace path variables in the URL
+    const finalUrl = url.replace(/:([a-zA-Z]+)/g, (_, key) => data?.[key] || `:${key}`);
+    
+    return request(finalUrl, {
+      data: method === 'GET' ? undefined : data, 
+      method,
+      params: method === 'GET' ? data : options?.params, 
+      baseURL,
+      headers: options?.headers,
+    });
+  };
+};
+
 export type APIFunc = <T>(data?: any, option?: IOption) => Promise<IApiResponses<T>>
 
 export type APIMap = {

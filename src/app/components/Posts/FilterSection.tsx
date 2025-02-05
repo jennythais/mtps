@@ -36,7 +36,7 @@ const FilterSection = () => {
       return (
             <>
                   {posts?.length || postsAssistant?.length === 0 ? (
-                        <LoadingFilter />
+                       <></>
                   ) : (
                         <Box sx={{
                               width: '85%',
