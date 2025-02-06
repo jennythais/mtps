@@ -21,14 +21,9 @@ const CreatePost = () => {
   }
   return (
     <>
-      {posts?.length || postsAssistant?.length === 0 ? (
-        ''
-      ) : (
-        <Button variant='outlined' onClick={handleOpenDialogCreate}>
-          Create Post
-        </Button>
-      )}
-
+      <Button variant='outlined' onClick={handleOpenDialogCreate}>
+        Create Post
+      </Button>
       <Dialog open={showDialogCreate} sx={{
         '& .MuiDialog-paper': {
           maxWidth: '60%',

@@ -148,13 +148,13 @@ const PostPage = () => {
                                                   <Stack direction='row' alignItems='center' spacing={1}>
                                                        <Typography sx={{ fontSize: '16px', fontWeight: 500 }}>Start at: </Typography>
                                                        <Typography sx={{ fontSize: '16px' }}>
-                                                            {formatDateTime(item?.startDate, item?.startTime)}
+                                                            {formatDateTime(item?.startAt)}
                                                        </Typography>
                                                   </Stack>
                                                   <Stack direction='row' alignItems='center' spacing={1}>
                                                        <Typography sx={{ fontSize: '16px', fontWeight: 500 }}>Finish at: </Typography>
                                                        <Typography sx={{ fontSize: '16px' }}>
-                                                            {formatDateTime(item?.endDate, item?.endTime)}
+                                                            {formatDateTime(item?.endAt)}
                                                        </Typography>
                                                   </Stack>
                                              </Box>

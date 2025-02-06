@@ -1,20 +1,19 @@
 import { useDispatch, useSelector } from '@/store'
+import { postActions } from '@/store/post'
 import { AppTypes } from '@/types'
+import getCurrentSemester from '@/utils/semester'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { LoadingButton } from '@mui/lab'
-import { Autocomplete, Box, Button, FormControl, Grid2, Stack, Switch, TextField, Typography } from '@mui/material'
+import { Autocomplete, Box, FormControl, Grid2, Stack, Switch, TextField, Typography } from '@mui/material'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import { DatePicker } from '@mui/x-date-pickers/DatePicker'
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
-import { TimePicker } from '@mui/x-date-pickers/TimePicker'
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo'
 import dayjs, { Dayjs } from 'dayjs'
 import { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import ErrorMessage from '../@shared/text/ErrorMessage'
-import { formatDate, formatTime } from '@/utils/formatDateTime'
-import { postActions } from '@/store/post'
-import getCurrentSemester from '@/utils/semester'
 type Options = {
      onOk?: (data: AppTypes.CreatePostRequest) => Promise<boolean>
      onCancel?: () => void
@@ -23,10 +22,8 @@ const defaultValues: AppTypes.CreatePostRequest = {
      name: '',
      desc: '',
      status: 'Public',
-     startDate: new Date(),
-     startTime: new Date(),
-     endDate: new Date(),
-     endTime: new Date(),
+     startAt: 0,
+     endAt: 0,
      location: '',
      numberParticipants: 0,
      facultyName: '',
@@ -48,14 +45,12 @@ const DialogCreateActivity = ({ handleClose }: Props) => {
                     facultyName: yup.string().default(user?.facultyName ?? ''),
                     location: yup.string().required('Location is required'),
                     numberParticipants: yup.number().required('Number of participants is required'),
-                    category: yup.string().oneOf(["All", "Academic", "Volunteer", "Mental Physical", "Discipline", "Reward", "Pioneering"]).required('Category is required'),
+                    category: yup.string().oneOf(["Academic", "Volunteer", "Mental Physical"]).required('Category is required'),
                     semester: yup.string().required('Semester is required'),
                     point: yup.mixed<AppTypes.Point>().oneOf([3, 5, 7, 10]).required('Point is required'),
                     status: yup.mixed<AppTypes.Status>().oneOf(['Public', 'Private']).required('Status is required'),
-                    startDate: yup.date().required('Start Date is required'),
-                    startTime: yup.date().required('Start Time is required'),
-                    endDate: yup.date().required('End Date is required'),
-                    endTime: yup.date().required('End Time is required'),
+                    startAt: yup.number().required('Start Date is required'),
+                    endAt: yup.number().required('Start Time is required'),
                })),
           defaultValues: {
                ...defaultValues,
@@ -63,41 +58,37 @@ const DialogCreateActivity = ({ handleClose }: Props) => {
           },
      })
      const [isPublic, setIsPublic] = useState(true)
-     const today = dayjs().startOf('day');
-     const now = dayjs();
-     const [startDate, setStartDate] = useState<Dayjs>(today);
-     const [startTime, setStartTime] = useState<Dayjs>(now);
-     const [endDate, setEndDate] = useState<Dayjs>(today.add(1, 'day'));
-     const [endTime, setEndTime] = useState<Dayjs>(now.add(1, 'hour'));
+     const today = new Date();
+     const [start, setStart] = useState<Date>(today);
+     const [end, setEnd] = useState<Date>();
      const [semesterOptions, setSemesterOptions] = useState<string[]>([]);
      const dispatch = useDispatch()
-     const handleStartDateChange = (newDate: Dayjs | null) => {
-          if (!newDate) return;
-          setStartDate(newDate);
-          if (newDate.isSame(today, 'day')) {
-               setStartTime(now);
-          } else {
-               setStartTime(newDate.startOf('day'));
-          }
-          if (newDate.isAfter(endDate, 'day')) {
-               setEndDate(newDate);
-          }
-     };
-     const handleStartTimeChange = (newTime: Dayjs | null) => {
-          if (!newTime) return;
-          setStartTime(newTime);
-     };
+     useEffect(() => {
+          const currentDate = new Date();
+          const nextDay = new Date(currentDate);
+          nextDay.setDate(currentDate.getDate() + 1);
+          nextDay.setHours(currentDate.getHours() + 1);
 
-     const handleEndDateChange = (value: Dayjs | null) => {
-          if (!value) return;
-          setEndDate(value ? value : today.add(1, 'day'));
-     };
-     const handleEndTimeChange = (newTime: Dayjs | null) => {
-          if (!newTime) return;
-          if (startDate.isSame(endDate, 'day') && newTime.isBefore(startTime)) {
+          setEnd(nextDay);
+     }, []);
+
+     const handleChangeStart = (newStart: Dayjs | null) => {
+          const now = new Date();
+          if (!newStart || newStart.toDate() < now) {
                return;
           }
-          setEndTime(newTime);
+          setStart(newStart.toDate());
+     };
+     const handleChangeEnd = (newEnd: Dayjs | null) => {
+          if (!newEnd) return;
+
+          const startDate = dayjs(start);
+          const endDate = dayjs(newEnd);
+
+          if (endDate.isBefore(startDate, 'minute')) {
+               return;
+          }
+          setEnd(newEnd.toDate());
      };
 
      useEffect(() => {
@@ -108,10 +99,8 @@ const DialogCreateActivity = ({ handleClose }: Props) => {
           try {
                const format: AppTypes.CreatePostRequest = {
                     ...data,
-                    startDate: formatDate(startDate),
-                    endDate: formatDate(endDate),
-                    startTime: formatTime(startTime),
-                    endTime: formatTime(endTime),
+                    startAt: start.valueOf() ?? 0,
+                    endAt: end?.valueOf() ?? 0,
                     status: isPublic ? 'Public' : 'Private',
                     facultyName: user?.facultyName ?? '',
                }
@@ -121,19 +110,11 @@ const DialogCreateActivity = ({ handleClose }: Props) => {
                     ...options,
                     open: false
                });
+               handleClose?.();
           } catch (error) {
                console.log('error:', error);
           }
      };
-
-     const handleCancel = () => {
-          options?.onCancel?.()
-          setOptions({
-               ...options,
-               open: false
-          })
-          reset()
-     }
      return (
           <form noValidate autoComplete='off'  >
                <Grid2 container spacing={2}>
@@ -219,11 +200,14 @@ const DialogCreateActivity = ({ handleClose }: Props) => {
                                    render={({ field }) =>
                                         <Autocomplete
                                              {...field}
-                                             options={['Academic', 'Volunteer', 'Mental Physical', 'Discipline', 'Reward', 'Pioneering']}
+                                             options={['Academic', 'Volunteer', 'Mental Physical']}
                                              renderInput={(params) =>
                                                   <TextField {...params}
                                                        label='Category'
                                                   />}
+                                             getOptionLabel={(option) => option.toString()}
+                                             isOptionEqualToValue={(option, value) => option === value}
+                                             onChange={(_, newValue) => field.onChange(newValue)}
                                         />
                                    }
                               />
@@ -244,6 +228,8 @@ const DialogCreateActivity = ({ handleClose }: Props) => {
                                                        label='Point'
                                                   />}
                                              getOptionLabel={(option) => option.toString()}
+                                             isOptionEqualToValue={(option, value) => option === value}
+                                             onChange={(_, newValue) => field.onChange(newValue)}
                                         />
                                    }
                               />
@@ -308,16 +294,19 @@ const DialogCreateActivity = ({ handleClose }: Props) => {
                     <Grid2 size={6}>
                          <LocalizationProvider dateAdapter={AdapterDayjs}>
                               <Controller
-                                   name='startDate'
+                                   name='startAt'
                                    control={control}
                                    render={({ field }) =>
-                                        <DatePicker
-                                             sx={{ width: '100%' }}
-                                             label="Start Date"
-                                             value={startDate}
-                                             onChange={handleStartDateChange}
-                                             disablePast
-                                        />
+                                        <DemoContainer components={['DateTimePicker']}>
+                                             <DateTimePicker
+                                                  {...field}
+                                                  label="Activity start at"
+                                                  value={dayjs(start)}
+                                                  onChange={handleChangeStart}
+                                                  minDate={dayjs()}
+                                                  minTime={dayjs().add(1, 'minute').set('second', 0).set('millisecond', 0)}
+                                             />
+                                        </DemoContainer>
                                    }
                               />
                          </LocalizationProvider>
@@ -325,50 +314,19 @@ const DialogCreateActivity = ({ handleClose }: Props) => {
                     <Grid2 size={6}>
                          <LocalizationProvider dateAdapter={AdapterDayjs}>
                               <Controller
-                                   name='startTime'
+                                   name='endAt'
                                    control={control}
                                    render={({ field }) =>
-                                        <TimePicker
-                                             sx={{ width: '100%' }}
-                                             label="Start Time"
-                                             value={startTime}
-                                             onChange={handleStartTimeChange}
-                                             disabled={startDate.isAfter(today)}
-                                        />
-                                   }
-                              />
-                         </LocalizationProvider>
-                    </Grid2>
-                    <Grid2 size={6}>
-                         <LocalizationProvider dateAdapter={AdapterDayjs}>
-                              <Controller
-                                   name='endDate'
-                                   control={control}
-                                   render={({ field }) =>
-                                        <DatePicker
-                                             sx={{ width: '100%' }}
-                                             label="End Date"
-                                             value={endDate}
-                                             onChange={handleEndDateChange}
-                                             minDate={startDate}  // Ensures end date cannot be before start date
-                                        />
-                                   }
-                              />
-                         </LocalizationProvider>
-                    </Grid2>
-                    <Grid2 size={6}>
-                         <LocalizationProvider dateAdapter={AdapterDayjs}>
-                              <Controller
-                                   name='endTime'
-                                   control={control}
-                                   render={({ field }) =>
-                                        <TimePicker
-                                             sx={{ width: '100%' }}
-                                             label="End Time"
-                                             value={endTime}
-                                             onChange={handleEndTimeChange}
-                                             disabled={endDate.isBefore(startDate)} 
-                                        />
+                                        <DemoContainer components={['DateTimePicker']}>
+                                             <DateTimePicker
+                                                  {...field}
+                                                  label="Activity end at"
+                                                  value={dayjs(end)}
+                                                  onChange={handleChangeEnd}
+                                                  minDate={dayjs(start)}
+                                                  minTime={dayjs(start).add(1, 'minute').set('second', 0).set('millisecond', 0)}
+                                             />
+                                        </DemoContainer>
                                    }
                               />
                          </LocalizationProvider>

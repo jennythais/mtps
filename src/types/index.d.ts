@@ -24,10 +24,8 @@ export namespace AppTypes {
           desc: string;
           facultyName: string;
           status: Status;
-          startDate: Date;
-          startTime: Date;
-          endDate: Date;
-          endTime: Date;
+          startAt: number;
+          endAt: number;
           location: string;
           point: Point;
           numberParticipants: number;
@@ -56,10 +54,8 @@ export namespace AppTypes {
           name: string;
           desc: string;
           status: Status;
-          startTime: Date;
-          startDate: Date;
-          endDate: Date;
-          endTime: Date;
+          startAt: number;
+          endAt: number;
           location: string;
           numberParticipants: number;
           facultyName: string;

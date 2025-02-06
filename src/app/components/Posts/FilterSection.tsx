@@ -35,46 +35,42 @@ const FilterSection = () => {
       }
       return (
             <>
-                  {posts?.length || postsAssistant?.length === 0 ? (
-                       <></>
-                  ) : (
-                        <Box sx={{
-                              width: '85%',
-                        }}>
-                              <Autocomplete
-                                    sx={{
+                  <Box sx={{
+                        width: '85%',
+                  }}>
+                        <Autocomplete
+                              sx={{
 
-                                          '& .MuiAutocomplete-inputRoot': {
-                                                fontFamily: 'var(--font-montserrat)',
-                                          },
-                                    }}
+                                    '& .MuiAutocomplete-inputRoot': {
+                                          fontFamily: 'var(--font-montserrat)',
+                                    },
+                              }}
 
-                                    multiple
-                                    options={category}
-                                    getOptionLabel={(option) => option.label}
-                                    onChange={(event, value) => {
-                                          const selectedCategories = value.map((option) => option.value)
-                                          if (selectedCategories.includes('all')) {
-                                                handleFilter(['all'])
-                                          } else {
-                                                handleFilter(selectedCategories)
-                                          }
-                                    }}
-                                    renderInput={(params) => (
-                                          <TextField
-                                                sx={{
-                                                      '& .MuiTextField-root': {
-                                                            fontFamily: 'var(--font-montserrat)'
-                                                      }
-                                                }}
-                                                {...params}
-                                                variant='outlined'
-                                                label='Category'
-                                          />
-                                    )}
-                              />
-                        </Box>
-                  )}
+                              multiple
+                              options={category}
+                              getOptionLabel={(option) => option.label}
+                              onChange={(event, value) => {
+                                    const selectedCategories = value.map((option) => option.value)
+                                    if (selectedCategories.includes('all')) {
+                                          handleFilter(['all'])
+                                    } else {
+                                          handleFilter(selectedCategories)
+                                    }
+                              }}
+                              renderInput={(params) => (
+                                    <TextField
+                                          sx={{
+                                                '& .MuiTextField-root': {
+                                                      fontFamily: 'var(--font-montserrat)'
+                                                }
+                                          }}
+                                          {...params}
+                                          variant='outlined'
+                                          label='Category'
+                                    />
+                              )}
+                        />
+                  </Box>
             </>
       )
 }

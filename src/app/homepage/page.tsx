@@ -6,7 +6,8 @@ import CreatePost from '../components/Posts/CreatePost'
 const Homepage = () => {
   return (
     <Box sx={{
-      backgroundColor: '#F4F6FF'
+      backgroundColor: '#F4F6FF',
+      height: '100vh',
     }}>
       <Box sx={{
         display: 'flex',
