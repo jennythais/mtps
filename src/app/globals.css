@@ -1,7 +1,9 @@
-@tailwind base;
-@tailwind components;
+@import "tailwindcss";
 @tailwind utilities;
 
+.container {
+     margin: 0 auto;
+}
 .MuiTypography-root{
      font-family: var(--font-montserrat);
 }

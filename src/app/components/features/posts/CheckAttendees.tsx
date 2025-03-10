@@ -7,7 +7,8 @@ import { LoadingButton } from '@mui/lab';
 import { useDispatch, useSelector } from '@/store';
 import { postActions } from '@/store/post';
 import toast from 'react-hot-toast';
-import AlertCheck from '../@shared/alert/AlertCheck';
+import AlertCheck from '../../@shared/alert/AlertCheck';
+
 
 interface CheckAttendeesProps {
      open: boolean;

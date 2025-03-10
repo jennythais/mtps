@@ -5,7 +5,6 @@ import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Autocomplete, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, Grid2, Stack, Switch, TextField, Typography } from '@mui/material'
 import { LoadingButton } from '@mui/lab'
-import ErrorMessage from '../components/@shared/text/ErrorMessage'
 import dayjs, { Dayjs } from 'dayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
@@ -14,7 +13,7 @@ import { TimePicker } from '@mui/x-date-pickers/TimePicker'
 import getCurrentSemester from '@/utils/semester'
 import { useDispatch, useSelector } from '@/store'
 import { postActions } from '@/store/post'
-import { formatDate, formatTime } from '@/utils/formatDateTime'
+import ErrorMessage from '@/app/components/@shared/text/ErrorMessage'
 type Options = {
   onOk?: (data: AppTypes.CreatePostRequest) => Promise<boolean>
   onCancel?: () => void
@@ -23,10 +22,8 @@ const defaultValues: AppTypes.CreatePostRequest = {
   name: '',
   desc: '',
   status: 'Public',
-  startDate: new Date(),
-  startTime: new Date(),
-  endDate: new Date(),
-  endTime: new Date(),
+  startAt: 0,
+  endAt: 0,
   location: '',
   numberParticipants: 0,
   facultyName: '',
@@ -49,10 +46,8 @@ const NewActivityDialog = forwardRef((_, ref) => {
         semester: yup.string().required('Semester is required'),
         point: yup.mixed<AppTypes.Point>().oneOf([3, 5, 7, 10]).required('Point is required'),
         status: yup.mixed<AppTypes.Status>().oneOf(['Public', 'Private']).required('Status is required'),
-        startDate: yup.date().required('Start Date is required'),
-        startTime: yup.date().required('Start Time is required'),
-        endDate: yup.date().required('End Date is required'),
-        endTime: yup.date().required('End Time is required'),
+        startAt: yup.number().required('Start At is required'),
+        endAt: yup.number().required('End At is required'),
       })),
     defaultValues: {
       ...defaultValues,
@@ -105,10 +100,8 @@ const NewActivityDialog = forwardRef((_, ref) => {
     try {
       const format: AppTypes.CreatePostRequest = {
         ...data,
-        startDate: formatDate(startDate),
-        endDate: formatDate(endDate),
-        startTime: formatTime(startTime),
-        endTime: formatTime(endTime),
+        startAt: dayjs(startDate).add(startTime.hour(), 'hour').add(startTime.minute(), 'minute').valueOf(),
+        endAt: dayjs(endDate).add(endTime.hour(), 'hour').add(endTime.minute(), 'minute').valueOf(),
         status: isPublic ? 'Public' : 'Private',
         facultyName: user?.facultyName ?? '',
       }
@@ -339,7 +332,7 @@ const NewActivityDialog = forwardRef((_, ref) => {
             <Grid2 size={6}>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <Controller
-                  name='startDate'
+                  name='startAt'
                   control={control}
                   render={({ field }) =>
                     <DatePicker
@@ -355,23 +348,7 @@ const NewActivityDialog = forwardRef((_, ref) => {
             <Grid2 size={6}>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <Controller
-                  name='startTime'
-                  control={control}
-                  render={({ field }) =>
-                    <TimePicker
-                      label="Start Time"
-                      value={startTime}
-                      onChange={handleStartTimeChange}
-                      disabled={startDate.isAfter(today)}
-                    />
-                  }
-                />
-              </LocalizationProvider>
-            </Grid2>
-            <Grid2 size={6}>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <Controller
-                  name='endDate'
+                  name='endAt'
                   control={control}
                   render={({ field }) =>
                     <DatePicker
@@ -379,22 +356,6 @@ const NewActivityDialog = forwardRef((_, ref) => {
                       value={endDate}
                       onChange={handleEndDateChange}
                       minDate={startDate}  // Ensures end date cannot be before start date
-                    />
-                  }
-                />
-              </LocalizationProvider>
-            </Grid2>
-            <Grid2 size={6}>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <Controller
-                  name='endTime'
-                  control={control}
-                  render={({ field }) =>
-                    <TimePicker
-                      label="End Time"
-                      value={endTime}
-                      onChange={handleEndTimeChange}
-                      disabled={endDate.isBefore(startDate)} // Disable end time if end date is before start date
                     />
                   }
                 />

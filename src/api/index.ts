@@ -25,7 +25,6 @@ const gen = (params: string, baseURL?: string) => {
   }
 
   return function (data?: any, options?: IOption) {
-    // Replace path variables in the URL
     const finalUrl = url.replace(/:([a-zA-Z]+)/g, (_, key) => data?.[key] || `:${key}`);
     
     return request(finalUrl, {
